@@ -8,12 +8,13 @@ int prefix_Evaluation(char *exp){
     for(int i=len-1;i>=0;i--){
         char ch=exp[i];
         if(isdigit(ch)){
-            int num=0;
-            while(isdigit(exp[i])){
-                num=num*10+exp[i]-48;
-                i++;
+            int num=0,base=1;
+            while(i>=0 && isdigit(exp[i])){
+                num=num+(exp[i]-'0')*base;
+                base*=10;
+                i--;
             }
-            i--;
+            i++;
             operand[++top1]=num;
         }
         else if(ch=='+'||ch=='-'||ch=='*'||ch=='/'||ch=='^'){
