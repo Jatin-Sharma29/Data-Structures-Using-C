@@ -29,7 +29,7 @@ char* infix_to_prefix(char *exp){
                 operator[++top]=chr;
             }
             else{
-                while(top!=-1 && precedence(chr)<=precedence(operator[top])){
+                while(top!=-1 && precedence(chr)<precedence(operator[top])){
                     outputstring[++index]=operator[top--];
                     
                 }
