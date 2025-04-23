@@ -75,12 +75,13 @@ void Delete_From_Beginning(){
         return;
     }
     Node*temp=head;
+    Node*last=head;
     while(temp->next!=head){
         temp=temp->next;
     }
     head=head->next;
     temp->next=head;
-    free(temp);
+    free(last);
     printf("Element deleted!!!\n");
 }
 void Delete_from_End(){
