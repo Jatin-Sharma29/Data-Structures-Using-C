@@ -71,6 +71,8 @@ void Delete_From_Beginning(){
      if(head->next== head){
         free(head);
         head=NULL;
+        printf("Element Deleted!!!\n");
+        return;
     }
     Node*temp=head;
     while(temp->next!=head){
@@ -88,6 +90,8 @@ void Delete_from_End(){
     }if(head->next== head){
         free(head);
         head=NULL;
+        printf("Element Deleted!!!\n");
+        return;
     }
     else{
     Node*temp=head;
