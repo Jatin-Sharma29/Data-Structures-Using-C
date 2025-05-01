@@ -12,7 +12,17 @@ Node* createnode(int data){
     new_node->left=new_node->right=NULL;
     return new_node;
 }
-void insert(int value){}
+Node* insert(Node* root,int value){
+    if(root==NULL){
+        return createnode(value);
+    }
+    else if(value < root->data){
+        root->left=insert(root->left,value);
+    }
+    else if(value > root->data){
+        root->right=insert(root->right,value);
+    }
+}
 void preorder(Node* root){
     if(root!=NULL){
         printf("%d",root->data);
@@ -34,9 +44,50 @@ void postorder(Node* root){
         printf("%d",root->data);
     }
 }
-void levelorder(Node* root){}
-void search(Node* root,int value){}
-void delete(Node* root,int value){}
+Node* search(Node* root,int value){
+    if(root==NULL)
+    return NULL;
+    else if(root->data==value)
+    return root;
+    else if(value < root->data)
+    return search(root->left,value);
+    else
+    return search(root->right,value);
+}
+Node* findMin(Node*root){
+    while(root->left!=NULL)
+    root=root->left;
+    return root;
+}
+Node* delete(Node* root,int value){
+    if(root==NULL)
+    return NULL;
+    else if(value < root->data)
+        root->left= delete(root->left,value);
+    else if(value>root->data)
+        root->right=delete(root->right,value);
+    else{
+        if(root->left==NULL && root->right==NULL){
+            free(root);
+            return NULL;
+        }
+        else if(root->right==NULL){
+            Node*temp=root->left;
+            free(root);
+            return temp;
+        }
+        else if(root->left==NULL){
+            Node*temp=root->right;
+            free(root);
+            return temp;
+        }
+        else{
+            Node*temp=findMin(root->right);
+            root->data=temp->data;
+            delete(root->right,temp->data);
+        }
+    }
+}
 int main(){
     int choice,value;
     Node*root=NULL;
