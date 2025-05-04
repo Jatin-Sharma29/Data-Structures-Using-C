@@ -1,155 +1,191 @@
 // Binary Tree Implementation Using Linked List
-#include<stdio.h>
-#include<stdlib.h>
-typedef struct Node{
-    struct TreeNode*left;
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct Node {
+    struct Node* left;
     int data;
-    struct TreeNode*right;
+    struct Node* right;
 } Node;
-Node* createnode(int data){
-    Node*new_node=(Node*)malloc(sizeof(Node));
-    new_node->data=data;
-    new_node->left=new_node->right=NULL;
+Node* createnode(int data) {
+    Node* new_node = (Node*)malloc(sizeof(Node));
+    new_node->data = data;
+    new_node->left = new_node->right = NULL;
     return new_node;
 }
-Node* insert(Node *root,int value){
-    if(root==NULL){
-    return createnode(value);
+Node* insert(Node* root, int value) {
+    if (root == NULL) {
+        return createnode(value);
+    } else {
+        Node* queue[10000];
+        int front = 0, rear = 0;
+        queue[rear++] = root;
+
+        while (front != rear) {
+            Node* temp = queue[front++];
+            if (temp->left == NULL) {
+                temp->left = createnode(value);
+                break;
+            } else if (temp->right == NULL) {
+                temp->right = createnode(value);
+                break;
+            } else {
+                queue[rear++] = temp->left;
+                queue[rear++] = temp->right;
+            }
+        }
     }
-    else{
-    Node* queue[10000];
-    int front=0,rear=0; 
-    queue[rear++]=root;
-    while(front!=rear){
-        Node*temp=queue[front++];
-        if(temp->left==NULL){
-        temp->left=createnode(value);
-        break;
-        }
-        else if(temp->right==NULL){
-        temp->right=createnode(value);
-        break;
-        }
-        else{
-            queue[rear++]=temp->left;
-            queue[rear++]=temp->right;
-        }
-      }
-    }
+    return root;
 }
-void preorder(Node* root){
-    if(root!=NULL){
-        printf("%d",root->data);
+void preorder(Node* root) {
+    if (root != NULL) {
+        printf("%d ", root->data);
         preorder(root->left);
         preorder(root->right);
     }
 }
-void inorder(Node* root){
-    if(root!=NULL){
+void inorder(Node* root) {
+    if (root != NULL) {
         inorder(root->left);
-        printf("%d",root->data);
+        printf("%d ", root->data);
         inorder(root->right);
     }
 }
-void postorder(Node* root){
-    if(root!=NULL){
+void postorder(Node* root) {
+    if (root != NULL) {
         postorder(root->left);
         postorder(root->right);
-        printf("%d",root->data);
+        printf("%d ", root->data);
     }
 }
-void levelorder(Node* root){
-    Node* queue[10000];// queue for levelorder traversal and insertion
-    int front=0,rear=0; 
-    queue[rear++]=root;
-    while(front!=rear){
-        Node*temp=queue[front++];
-        printf("%d",temp->data);
-        if(temp->left!=NULL)
-            queue[rear++]=temp->left;
-        if(temp->right!=NULL)
-            queue[rear++]=temp->right;
-    }
-}
-Node* search(Node* root,int value){
+void levelorder(Node* root) {
+    if (root == NULL) return;
     Node* queue[10000];
-    int front=0,rear=0; 
-    queue[rear++]=root;
-    while(front!=rear){
-        Node*temp=queue[front++];
-        if(temp->data==value)
+    int front = 0, rear = 0;
+    queue[rear++] = root;
+
+    while (front != rear) {
+        Node* temp = queue[front++];
+        printf("%d ", temp->data);
+        if (temp->left != NULL)
+            queue[rear++] = temp->left;
+        if (temp->right != NULL)
+            queue[rear++] = temp->right;
+    }
+}
+Node* search(Node* root, int value) {
+    if (root == NULL) return NULL;
+    Node* queue[10000];
+    int front = 0, rear = 0;
+    queue[rear++] = root;
+
+    while (front != rear) {
+        Node* temp = queue[front++];
+        if (temp->data == value)
             return temp;
-        if(temp->left!=NULL)
-            queue[rear++]=temp->left;
-        if(temp->right!=NULL)
-            queue[rear++]=temp->right;
+        if (temp->left != NULL)
+            queue[rear++] = temp->left;
+        if (temp->right != NULL)
+            queue[rear++] = temp->right;
     }
     return NULL;
 }
-Node*findDeepest(Node*root){
+Node* findDeepest(Node* root) {
+    if (root == NULL) return NULL;
+
     Node* queue[10000];
-    int front=0,rear=0; 
-    queue[rear++]=root;
-    Node*temp;
-    while(front!=rear){
-        temp=queue[front++];
-        if(temp->left!=NULL)
-            queue[rear++]=temp->left;
-        if(temp->right!=NULL)
-            queue[rear++]=temp->right;
+    int front = 0, rear = 0;
+    queue[rear++] = root;
+    Node* temp;
+
+    while (front != rear) {
+        temp = queue[front++];
+        if (temp->left != NULL)
+            queue[rear++] = temp->left;
+        if (temp->right != NULL)
+            queue[rear++] = temp->right;
     }
-    int i=(rear-2)/2; // formula to fimd the parent node of the deepest node
-    if(queue[i]->left==temp)
-        queue[i]->left=NULL; // removing the link with child
+
+    int i = (rear - 2) / 2; // Find parent of deepest node
+    if (queue[i]->left == temp)
+        queue[i]->left = NULL;
     else
-        queue[i]->right=NULL;
+        queue[i]->right = NULL;
+
     return temp;
 }
-void delete(Node* root,int value){
-    Node* temp=search(root,value);
-    if(temp==NULL){
+void delete(Node* root, int value) {
+    Node* temp = search(root, value);
+    if (temp == NULL) {
         printf("Element Not Found!!!\n");
-    } else{
-        Node*last=findDeepest(root);
-        temp->data=last->data;
+    } else {
+        Node* last = findDeepest(root);
+        temp->data = last->data;
         free(last);
         printf("Node Deleted!!!\n");
     }
 }
-int main(){
-    int choice,value;
-    Node*root=NULL;
-    while(1){
-        printf("1.Insert\n");
-        printf("2.Preorder\n");
-        printf("3.Inorder\n");
-        printf("4.Postorder\n");
-        printf("5.Levelorder\n");
-        printf("6.Search\n");
-        printf("7.Delete\n");
-        printf("8.Exit\n");
-        printf("Your Choice:");
-        scanf("%d",&choice);
-        switch(choice){
+int main() {
+    int choice, value;
+    Node* root = NULL;
+
+    while (1) {
+        printf("\n--- Binary Tree Menu ---\n");
+        printf("1. Insert\n");
+        printf("2. Preorder Traversal\n");
+        printf("3. Inorder Traversal\n");
+        printf("4. Postorder Traversal\n");
+        printf("5. Levelorder Traversal\n");
+        printf("6. Search\n");
+        printf("7. Delete\n");
+        printf("8. Exit\n");
+        printf("Your Choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
             case 1:
-            break;
+                printf("Enter value to insert: ");
+                scanf("%d", &value);
+                root = insert(root, value);
+                break;
             case 2:
-            break;
+                printf("Preorder: ");
+                preorder(root);
+                printf("\n");
+                break;
             case 3:
-            break;
+                printf("Inorder: ");
+                inorder(root);
+                printf("\n");
+                break;
             case 4:
-            break;
+                printf("Postorder: ");
+                postorder(root);
+                printf("\n");
+                break;
             case 5:
-            break;
+                printf("Levelorder: ");
+                levelorder(root);
+                printf("\n");
+                break;
             case 6:
-            break;
+                printf("Enter value to search: ");
+                scanf("%d", &value);
+                if (search(root, value))
+                    printf("Value Found!\n");
+                else
+                    printf("Value Not Found!\n");
+                break;
             case 7:
-            break;
+                printf("Enter value to delete: ");
+                scanf("%d", &value);
+                delete(root, value);
+                break;
             case 8:
-            exit(0);
+                exit(0);
             default:
-            printf("Invalid Choice!!!!\n");
+                printf("Invalid Choice!!!!\n");
         }
     }
+
     return 0;
 }
